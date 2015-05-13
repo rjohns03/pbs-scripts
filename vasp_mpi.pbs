@@ -12,11 +12,9 @@
 # Load the environment modules system
 source /etc/profile.d/modules.sh
 
-# Load the environment module for VASP version 5.2.12 built with
-# OpenMPI version 1.6 and the Intel compilers version 12.1.5
-module load openmpi/1.6.3/intel/12.1.5
-module load compiler/intel/12.1.15
-module load vasp/parallel
+# Load the environment module for VASP version 5.2.12. 
+# This also loads the associated compiler and openMPI 
+module load vasp/5.2.12/mvapich2/1.9/intel/14.0.2
 
 # Determine the number of processors allocated to this job
 export PROCS=`cat $PBS_NODEFILE | wc -l`
