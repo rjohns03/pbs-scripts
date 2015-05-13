@@ -1,0 +1,78 @@
+#!/bin/bash
+
+## University of New Mexico Center for Advanced Research Computing
+## Dr. Ryan Johnson, May 13, 2015
+## PBS submission script to run orca code
+
+#PBS -l walltime=00:01:00
+#PBS -l nodes=1:ppn=4
+#PBS -N test
+
+# User defined variables
+# Add any files here which are needed by ORCA.
+# At a minimum, you need the .inp file, which must be first.
+files=( "inp.inp" "inp.xyz" )
+
+cwd=$PBS_O_WORKDIR
+
+export RSH_COMMAND="ssh"
+
+source /opt/local/Modules/3.2.10/init/bash
+
+# Load Orca and openmpi modules
+module load orca/3.0.1
+module load openmpi/1.6.5/gcc/4.6.1
+
+
+# Internal variables for creating scratch dir
+input=${files[0]}
+NodeList=( `cat $PBS_NODEFILE | sort | uniq -c` )
+ExecHost=`hostname -s`
+nano_JobID=`echo -n $PBS_JOBID|cut -d'.' -f1`
+SCRDIR="/tmp/orcajob/$input"
+
+# Create scratch dir
+for (( i=0 ; i < ${#NodeList[@]} ; i++ ))
+do
+        ((i++))
+        if [[ ${NodeList[$i]} == $ExecHost ]] ; then
+                mkdir -p $SCRDIR
+        else
+                ssh -x -n ${NodeList[$i]} "mkdir -p $SCRDIR"
+        fi
+done
+
+echo Start: `date`
+
+# Create .nodes file and copy to SCRDIR
+cp "$PBS_NODEFILE" "$cwd/${input:0:${#input}-4}.nodes"
+cp "$cwd/${input:0:${#input}-4}.nodes" "$SCRDIR"
+
+for file in "${files[@]}"
+do
+	cp "$cwd/$file" "$SCRDIR/"
+done
+
+# cd to scratch dir and start orca
+
+cd "$SCRDIR"
+#/opt/local/orca/3.0.0/orca "$input" > "$cwd/${input:0:${#input}-4}.out"
+/opt/local/orca/3.0.1/orca "$input" > "$cwd/${input:0:${#input}-4}.out"
+
+
+# orca finished, copy output to user dir
+cp *.* "$cwd"
+
+# remove scratch dir
+for (( i=0 ; i < ${#NodeList[@]} ; i++ ))
+do
+        ((i++))
+        if [[ ${NodeList[$i]} == $ExecHost ]] ; then
+                rm -rf $SCRDIR
+        else
+                ssh -x -n ${NodeList[$i]} "rm -rf $SCRDIR"
+        fi
+done
+
+# All done
+echo Finish: `date`
