@@ -1,0 +1,67 @@
+#!/bin/bash
+
+## University of New Mexico Center for Advanced Research Computing
+## Dr. Ryan Johnson, May 13, 2015
+## PBS submission script to run Gaussian 09 code on a single node
+
+#PBS -W group_list=gaussian
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=24:00:00
+#PBS -N gauss
+
+
+#Load Gauss module
+module load gaussian/g09/C.01
+
+# source gaussian profile
+source /etc/profile.d/modules.sh  
+
+cd $PBS_O_WORKDIR
+
+# This pbs script contains the Gaussian .com file below. 
+# Set certain parameters with the following variables and 
+# they are expanded below.
+
+# Determine the number of processors allocated to this job
+export PROCS=`cat $PBS_NODEFILE | wc -l`
+
+METHOD="B3LYP"
+BASIS="TZVP"
+
+CHARGE=0
+MULTIPLICITY=1
+
+
+CHKPNT="chkpoint.chk"
+LOGFILE=$METHOD-$BASIS.log
+
+
+#----------------------".com" file ----------------------------------
+#
+
+g09 << EOF >$LOGFILE
+%NProcShared=$PROCS
+%Chk=$CHKPNT
+#n $METHOD/$BASIS Opt=VeryTight  Integral(UltraFineGrid)
+
+ Comment line 
+
+$CHARGE $MULTIPLICITY
+C  
+H   1 B1
+H   1 B2 2 A2
+H   1 B3 2 A3 3 D3
+H   1 B4 2 A4 3 D4
+Variables:
+B1        1.07000
+B2        1.07000
+A2      109.47100
+B3        1.07000
+A3      109.47128
+D3      240.00003
+B4        1.07000
+A4      109.47135
+D4      120.00010
+
+
+EOF
