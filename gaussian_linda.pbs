@@ -1,0 +1,187 @@
+#!/bin/csh
+
+# PBS script for multinode Gaussian on ulam, nano, gibbs and metropolis
+# using Linda for inter-node communication.
+#
+# For Ulam, use ppn=8, Gibbs = 16, Nano = 4, Metropolis = 2
+# Note: this script assumes that the
+# maximum available # of processors per node is being used;
+# ppn should be set accordingly.
+
+# SRA, 11/14.  Thanks to Godwin Amo-Kwao and Logan Giles for
+# providing baseline Gaussian input files and PBS scripts.
+# This script is based on Jim Prewett's extensive edits to provide
+# elegant Linda multinode job scripting starting with "BEGIN SCRIPTING"
+# comment below. [Thanks, Jim!]
+
+# Set nodes variable to use desired number of (multiple) nodes with Linda.
+#PBS -l nodes=2:ppn=8
+#PBS -l walltime=72:00:00
+
+# You can change the JOBNAME to be whatever you want,
+# to reflect the molecule and specifics of your job.
+# The JOBNAME cannot have any spaces in it, however.
+# It can be up to 15 characters, and needs to start with an
+# alphanumeric character.
+#PBS -N test
+
+# Queue name:
+#PBS -q defaultq
+
+# Set this and the #PBS -l above appropriately for the machine you are using
+# Ulam = 8, Gibbs = 16, Nano = 4, Metropolis = 2
+setenv PPN 8
+
+
+# Change directory to the directory from which the PBS script
+# was submitted (so that the job can find your input file).
+cd     $PBS_O_WORKDIR
+
+# set environment variables.
+# be sure to also invoke the following two commands
+# in your login shell before submitting this PBS script
+# on metropolis or nano
+
+# first, load the GNU Environment Modules system (this is wrong on ulam)
+source /etc/profile.d/modules.csh
+
+# now load the Gaussian '09 environment module
+module load gaussian/g09
+
+# source $g09root/g09/bsd/g09.login #profile
+
+# Uncomment to turn on very verbose Linda output
+# setenv GAUSS_LFLAGS -vv
+
+cd $PBS_O_WORKDIR
+
+#---- BEGIN SCRIPTING TO HACK/EDIT BASELINE USER .COM SCRIPT FOR LINDA ----
+#----                  Jim Prewett, November 2013                      ----
+
+# INPUT_FASE is the baseline G'09 single-node input file, containing
+# the data and settings describing the calculations to be performed.
+#
+# Edit the baseline .com file prior to submitting this PBS script,
+# in order to run different jobs with different basis set specifications,
+# exchange-correlation functionals, types of calculation (single-point vs.
+# geometry optimization, etc.)  See Gaussian '09 User Reference for details.
+
+setenv INPUT_BASE test.com
+
+# Edit the baseline input file via scripting, prepending it with
+# information about the specific physical resources (nodes) available, now
+# that the job has started and the actual assigned node names are known.
+# This editing will # create the final input file fed to Gaussian.
+
+if ( ! $?INPUT_BASE ) then
+  echo INPUT_BASE is not set, using My_Gaussian_base.inp as the input file name
+  setenv INPUT_BASE My_Gaussian_base.inp
+endif
+
+# Get the list of nodes that we've been allocated
+setenv NODES `uniq $PBS_NODEFILE | tr '[:space:]' ' '`
+
+# Convert the list of nodes from space-separated to comma-separated
+# for use in the input file
+setenv LINDA_WORKERS `echo $NODES | sed "s/ /:$PPN,/g" | sed "s/\$/:$PPN/g"`
+
+# Cause Linda to use SSH to connect to remote machines instead of RSH
+setenv GAUSS_LFLAGS '-vv -opt "Tsnet.Node.lindarsharg: ssh"'
+
+# Generate an input file for use with the resources we've been allocated
+
+# INPUT_SHORT_NAME is the name of the INPUT_BASE file with the .com or .inp extension
+# stripped off
+setenv INPUT_SHORT_NAME `echo $INPUT_BASE | sed 's/\.inp$//g ; s/\.com$//g'`
+
+# The NAME_EXTENSION will be appended to all of the filenames for this run
+if ( $?PBS_JOBID ) then
+  setenv NAME_EXTENSION $PBS_JOBID
+else
+  setenv NAME_EXTENSION $$ # $$ is the shell's PID
+endif
+
+# This file is generated using the INPUT_BASE file and the actual resources
+# we've been allocated
+if ( $?PBS_JOBID ) setenv PBS_JOBID $$
+setenv INPUT_FILE $INPUT_SHORT_NAME-$NAME_EXTENSION.inp
+
+setenv LOG_FILE $INPUT_SHORT_NAME-$NAME_EXTENSION.log
+
+# This is the name of the checkpoint file for our run
+# N.B. The actual filename will end with a ".chk" extension.
+#      Adding that extension here is optional.
+setenv CHK_FILE $INPUT_SHORT_NAME-$NAME_EXTENSION.chk
+
+# This is the number of processors available on a single node
+setenv LINDA_PPN `grep processor /proc/cpuinfo | wc -l`
+
+# This is the amount of memory available to a single process on a single node
+setenv MEM_TOTAL `cat /proc/meminfo | awk '/MemTotal/ {print $2}'`
+setenv MEM_NODE `echo $MEM_TOTAL / $LINDA_PPN | bc`
+
+cat > $INPUT_FILE <<EOF
+%NProcShared=$LINDA_PPN
+%LindaWorkers=$LINDA_WORKERS
+%chk=$CHK_FILE
+%mem=${MEM_NODE}KB
+EOF
+#%mem=${MEM_NODE}KB
+#EOF
+# %NprocShared=$LINDA_PPN
+# %chk=$CHK_FILE
+# %mem=${MEM_NODE}KB
+
+# Append the contents of the INPUT_BASE file to the INPUT_FILE file,
+# removing any lines beginning with %, as we'll generate those ourselves
+# This completes the generation of the edited input file for running
+# multinode G'09 with Linda.  It is saved in a file with extension .inp.
+
+awk '/^%/ {next} // {print}' $INPUT_BASE >> $INPUT_FILE
+
+
+# Print the name of the input file and then its contents
+echo input file is $INPUT_FILE
+echo it contains:
+cat $INPUT_FILE
+echo
+
+#---- END SCRIPTING TO HACK/EDIT BASELINE USER .COM SCRIPT FOR LINDA ----
+
+# Print a message with start time.  This will enable accurate
+# wallclock timings by computing endtime - starttime.
+echo Starting Gaussian at `date`
+
+# run job with $INPUT_FILE as the newly-hacked .com file.
+# Change baseline .com file to run different jobs with
+# different basis set specifications, exchange-correlation
+# functionals, types of calculation (single-point vs. geometry
+# optimization, etc.  See Gaussian '09 User Reference for details.
+g09 $INPUT_FILE
+
+setenv retval $?
+
+# Print a message with end time
+echo End Gaussian at `date`
+
+# Check the return code from Gaussian and display the relevant
+# information, either a success message or information about a failure
+if ! $retval then
+  # Show the last line from the log file that should say that
+  # everything went well!
+  tail -1 $LOG_FILE
+else
+        # print a message about the bad exit from Gaussian
+        # and display the last part of the logfile which should give us
+        # a clue as to /why/ there was a problem
+        echo Gaussian exited with return code $retval
+        echo Here is the end of the log file:
+        tail -n 20 $LOG_FILE
+endif
+
+exit $retval
+
+# Output from this script can be found in the .o<jobID> file
+# G'09 output in usual .log file
+
+#---- END RUN ----
