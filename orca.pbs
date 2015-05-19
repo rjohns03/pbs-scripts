@@ -56,7 +56,6 @@ done
 # cd to scratch dir and start orca
 
 cd "$SCRDIR"
-#/opt/local/orca/3.0.0/orca "$input" > "$cwd/${input:0:${#input}-4}.out"
 /opt/local/orca/3.0.1/orca "$input" > "$cwd/${input:0:${#input}-4}.out"
 
 
