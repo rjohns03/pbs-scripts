@@ -1,3 +1,7 @@
+## University of New Mexico Center for Advanced Research Computing
+## Ryan Johnson, July 9, 2015
+## PBS submission script to run MATLAB
+
 #PBS -l nodes=1:ppn=8
 #PBS -l walltime=01:00:00
 #PBS -N matlab_test
@@ -11,7 +15,7 @@ cd $PBS_O_WORKDIR
 echo starting Matlab jobs at `date`
 
 # Call your matlab code in file hello.m
-matlab -nojvm -nodisplay -r < hello.m > output.out
+matlab -r -nojvm -nodisplay < hello.m > output.out
 
 echo finished Matlab jobs at `date`
 
