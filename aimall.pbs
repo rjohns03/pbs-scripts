@@ -1,0 +1,22 @@
+## University of New Mexico Center for Advanced Research Computing
+## Ryan Johnson, July 9, 2015
+## PBS submission script to run MATLAB
+
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=01:00:00
+#PBS -N matlab_test
+#PBS -S /bin/bash
+
+source /etc/profile.d/modules.sh
+module load aimall
+
+cd $PBS_O_WORKDIR
+
+echo starting AIMAll jobs at `date`
+
+# Call your matlab code in file hello.m
+aimqb.ish -nogui mywavefunction.fchk
+
+echo finished AIMAll  jobs at `date`
+
+
