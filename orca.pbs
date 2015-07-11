@@ -17,7 +17,7 @@ cwd=$PBS_O_WORKDIR
 
 export RSH_COMMAND="ssh"
 
-source /opt/local/Modules/3.2.10/init/bash
+source /etc/profile.d/modules.sh
 
 # Load Orca and openmpi modules
 module load orca/3.0.1
