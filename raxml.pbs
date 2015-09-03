@@ -1,0 +1,17 @@
+#!/bin/bash
+
+## Introductory Example for running RAxML
+## Copyright (c) 2015 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+#PBS -lnodes=1:ppn=8
+#PBS -lwalltime=24:00:00
+
+# Load the environment modules system
+source /etc/profile.d/modules.sh
+
+# Load the RaxML software to access the executable "raxmlHPC-HYBRID"
+module load raxml/8.1.17/openmpi/1.8.4/intel/15.0.1
+
+# Now run it! 
+# Modify the following line for your particular job:
+raxmlHPC-HYBRID -f a -x 12345 -p 12345 -# 50 -m GTRGAMMA -s ASIP_phasedOG.fas -n outputfile.out
