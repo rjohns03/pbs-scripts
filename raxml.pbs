@@ -12,6 +12,12 @@ source /etc/profile.d/modules.sh
 # Load the RaxML software to access the executable "raxmlHPC-HYBRID"
 module load raxml/8.1.17/openmpi/1.8.4/intel/15.0.1
 
+# Determine the total number of processors allocated to this job
+export PROCS=$(cat $PBS_NODEFILE | wc -l)
+
+# Determine Core/ node
+export CORES=$(grep "processor" /proc/cpuinfo | wc -l)
+
 # Now run it! 
 # Modify the following line for your particular job:
-raxmlHPC-HYBRID -f a -x 12345 -p 12345 -# 50 -m GTRGAMMA -s ASIP_phasedOG.fas -n outputfile.out
+mpirun -np $PROCS -machinefile $PBS_NODEFILE raxmlHPC-HYBRID -T $CORES -f a -x 12345 -p 12345 -# 50 -m GTRGAMMA -s ASIP_phasedOG.fas -n outputfile.out
