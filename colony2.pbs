@@ -11,8 +11,8 @@
 # Load the environment modules system
 source /etc/profile.d/modules.sh
 
-# Load the environment module for VASP version 5.2.12.
-# This also loads the associated compiler and openMPI
+# Load the environment module for Colony version 2.0.5.9
+# This also loads the associated openMPI (1.6.5/gcc/4.4.7)
 module load colony/2.0.5.9
 
 # Determine the number of processors allocated to this job
@@ -21,6 +21,8 @@ export PROCS=`cat $PBS_NODEFILE | wc -l`
 # Change to the directory that this job was submitted from
 cd $PBS_O_WORKDIR
 
+# Call the executable to run on your input file. 
+# !!!!  You must modify YouInputFileName to match your file !!!!
 mpirun -np $PROCS -machinefile $PBS_NODEFILE colony2p-gun492-ompi165.out IFN:YourInputFileName
 
 
