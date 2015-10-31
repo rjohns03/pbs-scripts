@@ -1,22 +1,27 @@
 ## University of New Mexico Center for Advanced Research Computing
 ## Ryan Johnson, July 9, 2015
-## PBS submission script to run MATLAB
+## PBS submission script to run multiple python instances on nano
 
-#PBS -l nodes=1:ppn=8
+#PBS -l nodes=1:ppn=4
 #PBS -l walltime=01:00:00
-#PBS -N matlab_test
+#PBS -N my_python_job
 #PBS -S /bin/bash
 
 source /etc/profile.d/modules.sh
-module load matlab
+# This will load the anaconda scientific python stack into your path
+module load anaconda/2.1.0
 
+# Chang directory to the one you were in when you typed qsub
 cd $PBS_O_WORKDIR
 
-echo starting Matlab jobs at `date`
+echo starting job at `date`
 
-# Call your matlab code in file hello.m
-matlab -r -nojvm -nodisplay < hello.m > output.out
+# Call your code and put each task into the background so 4 will run on the 4 cores
+python mycode.py param1 > param1.out &
+python mycode.py param2 > param2.out &
+python mycode.py param3 > param3.out &
+python mycode.py param4 > param4.out &
 
-echo finished Matlab jobs at `date`
+echo finished job at `date`
 
 
