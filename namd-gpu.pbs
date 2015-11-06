@@ -12,14 +12,12 @@
 CONFFILE=4HNAk_wb.conf
 LOGFILE=4HNAk_wb.log
 
-NAMD_HOME=/opt/local/namd/2.10/singlenode_withgpu
 
 # Load the environment modules system
 source /etc/profile.d/modules.sh
 
-# Load the environment module for NAMD and openMPI 
-#module load openmpi/1.8.4/gcc
-#module load namd/2.10-multinode
+# Load the environment module for NAMD and cuda 
+module load namd/2.10/singlenode_withgpu
 module load cuda/7.5
 
 # Determine the number of processors allocated to this job
@@ -29,8 +27,7 @@ export PROCS=16
 cd $PBS_O_WORKDIR
 
 # Run the thing
+namd2 +p16 +setcpuaffinity +devices 0 $CONFFILE >& $LOGFILE
 
-$NAMD_HOME/namd2 +p16 +setcpuaffinity +devices 0 $CONFFILE >& $LOGFILE
-
-# If you want to use a dual-gpu node:
+# If you want to use a dual-gpu node set queue at top (#PBS -q dualGPU) and add device:
 #$NAMD_HOME/namd2 +p16 +setcpuaffinity +devices 0,1 $CONFFILE >& $LOGFILE
