@@ -1,0 +1,24 @@
+#!/bin/bash
+
+## Introductory Example for running STAR
+## Copyright (c) 2013 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+
+#PBS -lnodes=1:ppn=8
+#PBS -lwalltime=24:00:00
+#PBS -S /bin/bash
+
+# Load the environment modules system
+source /etc/profile.d/modules.sh
+
+# Load the environment module for STAR version 2.4.2a
+module load star/2.4.2a/gcc/4.8.4
+
+# Change to the directory that this job was submitted from
+cd $PBS_O_WORKDIR
+
+# Call the executable to run on your input file. 
+# !!!!  You must replace <parameters> to match your calculation !!!!
+STAR --runThreadN 8 --runMode alignReads --genomeDir ./genomeDir/Smansoni --readFilesIn BpMollR1_1_paired.fq BpMollR1_2_paired.fq --outFileNamePrefix BpMollR1 --outReadsUnmapped Fastx --outSAMtype BAM SortedByCoordinate
+
+
