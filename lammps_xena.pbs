@@ -1,0 +1,28 @@
+#!/bin/bash
+
+## Introductory Example for running LAMMPS on GPU machine Xena
+## Copyright (c) 2013 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+
+#PBS -lnodes=1:ppn=8
+#PBS -lwalltime=48:00:00
+#PBS -S /bin/bash
+
+# Set input and output files here:
+INPUT=in.STP
+OUTPUT=out.log
+
+# Load the environment modules system
+source /etc/profile.d/modules.sh
+
+# Load the environment module for LAMMPS version 10Aug15 on xena
+# This also loads the associated compiler and openMPI 
+module load lammps/10Aug15/intelmpi/16.0.0/intel/16.0.0
+
+# Determine the number of processors allocated to this job
+export PROCS=`cat $PBS_NODEFILE | wc -l`
+
+# Change to the directory that this job was submitted from
+cd $PBS_O_WORKDIR
+
+mpirun -np $PROCS -machinefile $PBS_NODEFILE lmp_xena -sf gpu -pk gpu 1 -in $INPUT > $OUTPUT

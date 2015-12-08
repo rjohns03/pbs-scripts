@@ -20,8 +20,9 @@ export RSH_COMMAND="ssh"
 source /etc/profile.d/modules.sh
 
 # Load Orca and openmpi modules
-module load orca/3.0.1
-module load openmpi/1.6.5/gcc/4.6.1
+module load orca/3.0.3
+
+ORCA_EXEC = ${which orca}
 
 
 # Internal variables for creating scratch dir
@@ -57,7 +58,7 @@ done
 # cd to scratch dir and start orca
 
 cd "$SCRDIR"
-/opt/local/orca/3.0.1/orca "$input" > "$cwd/${input:0:${#input}-4}.out"
+$ORCA_EXEC "$input" > "$cwd/${input:0:${#input}-4}.out"
 
 
 # orca finished, copy output to user dir
