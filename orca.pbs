@@ -22,8 +22,8 @@ source /etc/profile.d/modules.sh
 # Load Orca and openmpi modules
 module load orca/3.0.3
 
-ORCA_EXEC = ${which orca}
-
+# Get the full path to orca (helps will some mpi problems)
+export ORCA_EXEC=$(which orca)
 
 # Internal variables for creating scratch dir
 input=${files[0]}
