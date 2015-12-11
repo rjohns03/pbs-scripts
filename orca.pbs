@@ -4,9 +4,9 @@
 ## Ryan Johnson, May 13, 2015
 ## PBS submission script to run orca code
 
-#PBS -l walltime=00:01:00
+#PBS -l walltime=01:00:00
 #PBS -l nodes=1:ppn=4
-#PBS -N test
+#PBS -N TestIt
 
 # User defined variables
 # Add any files here which are needed by ORCA.
@@ -19,10 +19,10 @@ export RSH_COMMAND="ssh"
 
 source /etc/profile.d/modules.sh
 
-# Load Orca and openmpi modules
-module load orca/3.0.3
+# Load Orca and included openmpi modules
+module load orca
 
-# Get the full path to orca (helps will some mpi problems)
+# Get the full path to orca (helps with mpi problems)
 export ORCA_EXEC=$(which orca)
 
 # Internal variables for creating scratch dir
