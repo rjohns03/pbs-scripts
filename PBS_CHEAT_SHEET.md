@@ -5,16 +5,18 @@ The Center for Advanced Research Computing uses the Torque, aka "PBS", job sched
 ### Frequently Used Commands 
 Command	  	   | Description
 -------------------|----------------- 
-qsub <script>  	   |  Submit a pbs script	
-qstat <job_id>	   |  Show the status of queue and pbs jobs
-qdel <job_id>	   |  Delete a pbs job
+qsub \<script\>      |  Submit a pbs script
+qstat \<job_id\>     |  Show the status of queue and pbs jobs
+qdel \<job_id\>	   |  Delete a pbs job
+
+
 
 
 ### Checking the Queue and Job Status
 Command	  	      | Description
 ----------------------|----------------- 
-qstat -q              |   Lisst all queues and the limitiations on them
+qstat -q              |   List all queues and the limitiations on them
 qstat -a	      |   List all jobs. Note: -a gives actual walltime of running jobs.
-qstat -au <username>  |   List jobs for given username 
+qstat -au \<username\>  |   List jobs for given username 
 qstat -r	      |   List running jobs
-qstat -f <job_id>     |   List full information about job_id
+qstat -f \<job_id\>     |   List full information about job_id
