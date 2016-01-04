@@ -4,7 +4,7 @@ The Center for Advanced Research Computing uses the Torque, aka "PBS", job sched
 
 ### Frequently Used Commands 
 Command	  	   | Description
-__________________ | ________________ 
-qsub [script]		|  Submit a pbs script	
-qstat [job_id]		|  Show the status of queue and pbs jobs
-qdel [job_id]		|  Delete a pbs job
+-------------------|----------------- 
+qsub [script]  	   |  Submit a pbs script	
+qstat [job_id]	   |  Show the status of queue and pbs jobs
+qdel [job_id]	   |  Delete a pbs job
