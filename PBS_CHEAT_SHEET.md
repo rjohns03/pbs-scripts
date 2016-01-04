@@ -9,9 +9,10 @@ qsub <script>  	   |  Submit a pbs script
 qstat <job_id>	   |  Show the status of queue and pbs jobs
 qdel <job_id>	   |  Delete a pbs job
 
+
 ### Checking the Queue and Job Status
-Command	  	   | Description
--------------------|----------------- 
+Command	  	      | Description
+----------------------|----------------- 
 qstat -q              |   Lisst all queues and the limitiations on them
 qstat -a	      |   List all jobs. Note: -a gives actual walltime of running jobs.
 qstat -au <username>  |   List jobs for given username 
