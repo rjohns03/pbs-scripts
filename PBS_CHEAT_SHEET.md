@@ -1,8 +1,8 @@
 ## PBS (TORQUE) CHEET SHEET
 
-The Center for Advanced Research Computing uses the Torque, aka "PBS", job schedular. (Note: When searching for information about PBS use the combined name "PBS TORQUE" to get more relevant results). PBS is a tool that allocates computing resources, schedules and manages job execution and allows you to monitor the status of queued and running jobs. Here is a cheet sheet of useful PBS commands and uses. Full information can be found in the Torque documentation found here: http://docs.adaptivecomputing.com
+The Center for Advanced Research Computing uses the Torque, aka "PBS", job scheduler. (Note: When searching for information about PBS use the combined name "PBS TORQUE" to get more relevant results). PBS is a tool that allocates computing resources, schedules and manages job execution and allows you to monitor the status of queued and running jobs. Here is a cheat sheet of useful PBS commands and uses. Full information can be found in the Torque documentation found here: http://docs.adaptivecomputing.com
 
-PBS uses a few commands to control the jobs and queues and special scripts (pbs scripts here out) which have special arguments for reqesting various resources (number of nodes, walltime, memory, etc), name the job, control error and output, but are otherwise simple linux shell scripts. This repository contains a collection of such scripts that I have written for a number of applications, but they can be extremely flexible. If you need help writing a script please contact the CARC help desk. 
+PBS uses a few commands to control the jobs and queues and special scripts (pbs scripts here out) which have special arguments for requesting various resources (number of nodes, walltime, memory, etc), name the job, control error and output, but are otherwise simple Linux shell scripts. This repository contains a collection of such scripts that I have written for a number of applications, but they can be extremely flexible. If you need help writing a script please contact the CARC help desk. 
 
  
 
