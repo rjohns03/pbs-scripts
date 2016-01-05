@@ -12,7 +12,7 @@ qdel \<job_id\>	   |  Delete a pbs job
 
 
 
-### Checking the Queue and Job Status with ~~qstat~~
+### Checking the Queue and Job Status with qstat
 Command	  	      | Description
 ----------------------|----------------- 
 qstat -q              |   List all queues and the limitiations on them
@@ -20,3 +20,5 @@ qstat -a	      |   List all jobs. Note: -a gives actual walltime of running jobs
 qstat -au \<username\>  |   List jobs for given username 
 qstat -r	      |   List running jobs
 qstat -f \<job_id\>     |   List full information about job_id
+
+
