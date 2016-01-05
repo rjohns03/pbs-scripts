@@ -26,16 +26,20 @@ qstat -f \<job_id\>     |   List full information about job_id
 ### Deleting a Job
 Suppose you have realized a mistake in a job you have submitted and need to delete the job from the queue. You will need to get the job_id of the running job and then use qdel to delete it. Use qstat to get the job as follows: 
 
-```$qstat -au rjohns03
+```bash
+$qstat -au rjohns03
 
 nano.nano.alliance.unm.edu:
                                                                                   Req'd    Req'd       Elap
 Job ID                  Username    Queue    Jobname          SessID  NDS   TSK   Memory   Time    S   Time
 ----------------------- ----------- -------- ---------------- ------ ----- ------ ------ --------- - ---------
-5813.nano.nano.allianc  rjohns03    one_node My_big_calculati  27687     1      4    --   01:00:00 R  00:00:07```
+5813.nano.nano.allianc  rjohns03    one_node My_big_calculati  27687     1      4    --   01:00:00 R  00:00:07
+```
 
 I get the job_id from the first column in the resulting table. For this job the id is 5813. I can now delete the job as follows: 
 
-```$qdel 5813```
+```bash
+$qdel 5813
+```
 
 
