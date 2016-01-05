@@ -55,7 +55,7 @@ nano.nano.alliance.unm.edu:
                                                                                   Req'd    Req'd       Elap
 Job ID                  Username    Queue    Jobname          SessID  NDS   TSK   Memory   Time    S   Time
 ----------------------- ----------- -------- ---------------- ------ ----- ------ ------ --------- - ---------
-5813.nano.nano.allianc  rjohns03    one_node NobelPrizeWork   27687     1      4    --   01:00:00 R  00:00:07
+5813.nano.nano.allianc  rjohns03    one_node NobelPrizeWork    27687     1      4    --   01:00:00 R  00:00:07
 ```
 
 I get the job_id from the first column in the resulting table. For this job the id is 5813. I can now delete the job as follows: 
