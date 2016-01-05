@@ -29,6 +29,20 @@ qstat -f \<job_id\>     |   List full information about job_id
 ###Submiting a job
 To submit a job you will use the qsub command to submit the psb script. 
 
+```bash
+$qsub orca.pbs
+5813.nano.nano.alliance.unm.edu
+
+$qstat -au rjohns03
+
+nano.nano.alliance.unm.edu:
+                                                                                  Req'd    Req'd       Elap
+Job ID                  Username    Queue    Jobname          SessID  NDS   TSK   Memory   Time    S   Time
+----------------------- ----------- -------- ---------------- ------ ----- ------ ------ --------- - ---------
+5813.nano.nano.allianc  rjohns03    one_node NobelPrizeWork   27687     1      4    --   01:00:00 R  00:00:07
+```
+
+
 
 ### Deleting a Job
 Suppose you have realized a mistake in a job you have submitted and need to delete the job from the queue. You will need to get the job_id of the running job and then use qdel to delete it. Use qstat to get the job as follows: 
