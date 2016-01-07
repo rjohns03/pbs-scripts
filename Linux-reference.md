@@ -4,6 +4,7 @@ Linux is amazingly powerful. As with most powerful tools there is a learning cur
 
 
 ### File Commands
+
 Command   |  Description
 -------------------------
 ls          | List files in the current directory
