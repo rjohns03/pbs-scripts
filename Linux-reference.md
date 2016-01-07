@@ -9,12 +9,12 @@ Command   |  Description
 ----------|---------------
 ls          | **L**i**s**t files in the current directory
 ls -l       | Formatted list with more detail
-cd \<dir\>  | Change directory to *dir*
-pwd 	    | Print the current working directory
-rm \<file\> | blah
-rm -r \<dir\> | blah
-cp /<file1\> \<file2\> | blah 
-cp -r \<dir1\> \<dir2\> | blah
-mv \<file1\> \<file2/> | blah
+cd \<dir\>  | **C**hange **d**irectory to *dir*
+pwd 	    | **P**rint the current **w**orking **d**irectory
+rm \<file\> | **R**e**m**ove a file
+rm -r \<dir\> | **R**e**m**ove **r**ecusively. Removes a directory and everything within it 
+cp /<file1\> \<file2\> | **C**o**p**y file1 to file2
+cp -r \<dir1\> \<dir2\> | **C**o**p**y a directory to another directory
+mv \<file1\> \<file2/> | **M**o**v**e file1 to file2. If file2 is a directory, file1 will be moved into file2
  
  
