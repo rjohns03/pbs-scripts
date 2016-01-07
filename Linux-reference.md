@@ -10,10 +10,10 @@ ls          | List files in the current directory
 ls -l       | Formatted list with more detail
 cd \<dir\>  | Change direcotry to *dir*
 pwd 	    | Print the current working directory
-rm \<file\> | 
-rm -r \<dir\> | 
-cp /<file1\> \<file2\> | 
-cp -r \<dir1\> \<dir2\> | 
-mv \<file1\> \<file2/> | 
+rm \<file\> | blah
+rm -r \<dir\> | blah
+cp /<file1\> \<file2\> | blah 
+cp -r \<dir1\> \<dir2\> | blah
+mv \<file1\> \<file2/> | blah
  
  
