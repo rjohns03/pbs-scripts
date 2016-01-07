@@ -25,6 +25,7 @@ qstat -au \<username\>  |   List jobs for given username
 qstat -an            |   List jobs and the compute node(s) that they are running on 
 qstat -r	      |   List running jobs
 qstat -f \<job_id\>     |   List full information about job_id
+qstat -an1             | Prints each job on a single line so that it can be piped into grep, for example
 
 ###Submiting a job
 To submit a job you will use the qsub command to submit the psb script. 
