@@ -3,6 +3,15 @@
 Linux is amazingly powerful. As with most powerful tools there is a learning curve, but it is actually a fairly mild one. In order to use CARC supercomputers you will need to learn a few basic commands to read, write, copy and remove files, create, copy and remove directories, and understand the file tree and where you are in it. The following is a reference sheet for the most basic commands, but again, Linux is extremely powerful and learning details beyond the basics will allow you to be more a efficient, happy and productive computational scientist. 
 
 
+### Conventions
+Convention | Meaning
+-----------|--------
+.          | Current directory
+..         | One directory above current directory
+~          | Your home directory
+\<blah\>   | In this document, things wrapped in \<\> indicate fields that need to be replaced by user. Do not include the \<\> brackets.  
+
+
 ### File Commands
 
 Command   |  Description
