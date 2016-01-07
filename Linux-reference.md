@@ -7,7 +7,7 @@ Linux is amazingly powerful. As with most powerful tools there is a learning cur
 
 Command   |  Description
 ----------|---------------
-ls          | List files in the current directory
+ls          | **L**i**s**t files in the current directory
 ls -l       | Formatted list with more detail
 cd \<dir\>  | Change directory to *dir*
 pwd 	    | Print the current working directory
