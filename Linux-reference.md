@@ -24,7 +24,7 @@ rm \<file\> | **R**e**m**ove a file
 rm -r \<dir\> | **R**e**m**ove **r**ecusively. Removes a directory and everything within it 
 cp /<file1\> \<file2\> | **C**o**p**y file1 to file2
 cp -r \<dir1\> \<dir2\> | **C**o**p**y a directory to another directory
-mv \<file1\> \<file2/> | **M**o**v**e file1 to file2. If file2 is a directory, file1 will be moved into file2
+mv \<file1\> \<file2\> | **M**o**v**e file1 to file2. If file2 is a directory, file1 will be moved into file2
 mkdir \<directory\> | **M**a**k**e **dir**ecotry  
 rmdir \<directory\> | **R**e**m**ove **dir**ectory 
  
