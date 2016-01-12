@@ -9,12 +9,11 @@
 #PBS -l walltime=24:00:00
 #PBS -N gauss
 
+# source modules file
+source /etc/profile.d/modules.sh  
 
 #Load Gauss module
 module load gaussian/g09/C.01
-
-# source gaussian profile
-source /etc/profile.d/modules.sh  
 
 cd $PBS_O_WORKDIR
 
