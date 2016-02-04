@@ -1,0 +1,19 @@
+#!/bin/bash
+
+## Introductory Example for running Quantum Espresso
+## Copyright (c) 2013 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+
+#PBS -l nodes=1:ppn=16
+#PBS -l walltime=01:00:00
+#PBS -N espresso
+
+# Load up espresso into path. Note: this espesso is built for single node, multi-core use with openMP
+module load espresso 
+
+# Determine the number of processors allocated to this job
+export PROCS=`cat $PBS_NODEFILE | wc -l`
+
+cd $PBS_O_WORKDIR
+
+pw.x < test.in > test.out
