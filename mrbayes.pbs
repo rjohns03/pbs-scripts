@@ -1,0 +1,27 @@
+#!/bin/bash
+
+## Introductory Example for running Mr. Bayes
+## Copyright (c) 2013 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+
+
+#PBS -lnodes=2:ppn=4
+#PBS -lwalltime=24:00:00
+#PBS -S /bin/bash
+
+# Load the environment modules system
+source /etc/profile.d/modules.sh
+
+# Load the environment module for mrbayes version 3.2.4
+# This also loads the associated openmpi library and beagle
+module load mrbayes/3.2.4/gcc/4.7.2/openmpi/1.8.4
+
+# Determine the number of processors allocated to this job
+export PROCS=`cat $PBS_NODEFILE | wc -l`
+
+# Change to the directory that this job was submitted from
+cd $PBS_O_WORKDIR
+
+mpirun -np $PROCS -machinefile $PBS_NODEFILE mb nobel_prize_winning.nexus > nobel_prize_winning.log
+
+
