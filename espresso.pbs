@@ -14,9 +14,9 @@ module load espresso-MPI/5.3.0/intel/16.0.0
 # Choose the number of threads each MPI process will have. # of MPI * # of threads = total # of cores
 # Note: For the jobs I have tested, I find more MPI and fewer threads to be most efficient
 export OMP_NUM_THREADS=1
-export MPI-procs=16
+export MPI_procs=16
 
 cd $PBS_O_WORKDIR
 
-mpirun -np $MPI-procs -machinefile $PBS_NODEFILE pw.x < test.in > test.out
+mpirun -np $MPI_procs -machinefile $PBS_NODEFILE pw.x < test.in > test.out
 
