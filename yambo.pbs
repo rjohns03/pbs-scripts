@@ -17,8 +17,11 @@ module load yambo
 
 # Determine the number of processors allocated to this job
 export PROCS=`cat $PBS_NODEFILE | wc -l`
+# Use 1 openMP thread per MPI task
+export OMP_NUM_THREADS=1
 
-# Change to the directory that this job was submitted from
+ #Change to the directory that this job was submitted from
 cd $PBS_O_WORKDIR
 
-mpirun -np $PROCS -machinefile $PBS_NODEFILE yambo
+# Make sure to add your command line arguments after yambo
+mpirun -np $PROCS -machinefile $PBS_NODEFILE yambo 
