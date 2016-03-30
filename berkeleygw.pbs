@@ -1,0 +1,36 @@
+#!/bin/bash
+
+## Introductory Example for running BerkeleyGW
+## Copyright (c) 2013 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+
+#PBS -lnodes=1:ppn=16
+#PBS -lwalltime=48:00:00
+#PBS -S /bin/bash
+
+# Load the environment modules system
+source /etc/profile.d/modules.sh
+
+# Load the environment module for yambo
+# This also loads the associated compiler and openMPI 
+module load berkeleygw
+
+# Use one openMP thread per MPI process
+export OMP_NUM_THREADS=1
+
+# Determine the number of processors allocated to this job
+export PROCS=`cat $PBS_NODEFILE | wc -l`
+
+# Change to the directory that this job was submitted from
+cd $PBS_O_WORKDIR
+
+#BerkeleyGW has a number of executables depending on the calculation.
+#Choose one of the following:
+#epsilon.cplx.x
+#sigma.cplx.x
+#eqp.py
+#kernel.cplx.x
+#absorption.cplx.x
+
+
+mpirun -np $PROCS -machinefile $PBS_NODEFILE sigma.cplx.x
