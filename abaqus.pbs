@@ -1,0 +1,39 @@
+#!/bin/bash
+
+## Introductory Example for running Mr. Bayes
+## Copyright (c) 2013 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+
+
+#PBS -lnodes=1:ppn=8
+#PBS -lwalltime=24:00:00
+#PBS -S /bin/bash
+
+# Specify all input and output file names:
+INPUT=Beam-3.inp
+JOBNAME=Beam-3 
+
+# Get number of processors and nodes
+NPROC = $(cat $PBS_NODEFILE | wc -l)
+NNODES = $(cat $PBS_NODEFILE | uniq | wc -l)
+
+# Load the environment modules system
+source /etc/profile.d/modules.sh
+
+# Load the environment module for mrbayes version 3.2.4
+# This also loads the associated openmpi library and beagle
+module load abaqus
+module load openmpi/1.10.0/gcc/4.8.4
+
+#Make sure everything is Linux compatable
+dos2unix ./*
+
+# Change to the directory that this job was submitted from
+cd $PBS_O_WORKDIR
+
+# Set up license file:  (SPECIFY YOUR LICENSE DETAILS HERE. ie 55555@129.10.100.10)
+export ABAQUSLM_LICENSE_FILE=
+
+abaqus cpus=$NPROC mp_mode=mpi job=Beam-3 input=$INPUT
+
+
