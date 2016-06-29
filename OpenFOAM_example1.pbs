@@ -1,0 +1,88 @@
+#!/bin/bash
+## Center for Advanced Research Computing
+## at The University of New Mexico
+##
+## 	This is an example script
+##	used to submit OpenFOAM
+##	jobs on CARC machines.
+##	
+# Xena
+# #PBS -lnodes=1:ppn=8
+# Ulam, Pequena 
+# #PBS -lnodes=1:ppn=8
+# Nano
+# #PBS -lnodes=2:ppn=4
+# Metropolis
+#PBS -lnodes=4:ppn=2
+#PBS -lwalltime=04:00:00
+#PBS -S /bin/bash
+#
+# Specify a name for this job
+#PBS -N motorbike
+
+# Switch to working directory
+cd "$PBS_O_WORKDIR"
+
+# Get number of processors and nodes
+NPROCS=$(cat $PBS_NODEFILE | wc -l)
+NNODES=$(cat $PBS_NODEFILE | uniq | wc -l)
+
+# Load the environment modules system 
+#source /etc/profile.d/modules.sh
+
+# Load compiler and/or OpenMPI module
+#module load compiler/intel/16.0.0
+
+#---- Nano
+#module load openmpi/1.10.0/intel/16.0.0
+
+#module load openmpi/1.10.1/intel/16.0.0
+#module load openmpi/1.10.1/gcc/4.8.4
+
+#---- Xena
+#module load openmpi/1.10.1/gcc/4.8.3
+
+#---- Metropolis
+#module load openmpi/1.10.2/gcc/4.8.5
+module load openmpi/1.10.2/intel/16.0.0
+
+#Load OpenFOAM module
+
+#module load openfoam/2.3.0
+#module load openfoam/3.0+/openmpi/1.10.1/intel/16.0.0
+#module load openfoam/3.0+/openmpi/1.10.1/gcc/4.8.4
+
+# This line is included because module for openfoam/3.0+ does not yet exit
+#source ~/CARC-builds/OpenFOAM/xena/JD_compiles/intel/16.0.0/openmpi/1.10.1/OpenFOAM-v3.0+/etc/bashrc
+#source ~/CARC-builds/OpenFOAM/xena/JD_compiles/gcc/4.8.4/openmpi/1.10.1/OpenFOAM-v3.0+/etc/bashrc
+#source /users/jdcf2710/CARC-builds/OpenFOAM/xena/OpenFOAM-v3.0+/etc/bashrc
+source /users/jdcf2710/CARC-builds/OpenFOAM/metropolis/OpenFOAM-v3.0+/etc/bashrc
+#source /users/jdcf2710/CARC-builds/OpenFOAM/nano/builds/openmpi/1.10.0/intel/16.0.0/OpenFOAM-v3.0+/etc/bashrc
+
+# Source OpenFOAM run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# copy motorbike surface from resources directory
+cp $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz constant/triSurface/
+
+runApplication surfaceFeatureExtract
+
+runApplication blockMesh
+
+runApplication decomposePar
+
+runParallel snappyHexMesh ${NPROCS} -overwrite
+
+##- For parallel running
+ls -d processor* | xargs -i rm -rf ./{}/0 $1
+ls -d processor* | xargs -i cp -r 0.org ./{}/0 $1
+
+runParallel patchSummary ${NPROCS}
+runParallel potentialFoam ${NPROCS} -noFunctionObjects -writep
+runParallel $(getApplication) ${NPROCS}
+
+runApplication reconstructParMesh -constant
+runApplication reconstructPar -latestTime
+
+# ----------------------------------------------------------------- end-of-file
+
