@@ -1,0 +1,42 @@
+#!/bin/bash
+## Center for Advanced Research Computing
+## at The University of New Mexico
+##
+## 	This is an example script
+##	used to submit OpenFOAM
+##	jobs on CARC machines.
+##	
+# #PBS -lnodes=2:ppn=4
+#PBS -lwalltime=04:00:00
+#PBS -S /bin/bash
+# Specify a name for this job
+#PBS -N myOFjob
+#PBS -j oe
+
+# Switch to working directory
+cd "$PBS_O_WORKDIR"
+
+# Get number of processors and nodes
+NPROCS=$(cat $PBS_NODEFILE | wc -l)
+
+# Load the environment modules system 
+#source /etc/profile.d/modules.sh
+
+#Load OpenFOAM module
+
+#module load openfoam/2.3.0
+#module load openfoam/3.0/openmpi/1.10.2/intel/16.0.0
+
+# Source OpenFOAM run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+runApplication blockMesh
+
+runApplication decomposePar
+
+runParallel $(getApplication) ${NPROCS}
+
+runApplication reconstructPar -latestTime
+
+# ----------------------------------------------------------------- end-of-file
+
