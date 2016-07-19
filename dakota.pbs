@@ -1,0 +1,29 @@
+#!/bin/bash
+## Center for Advanced Research Computing
+## at The University of New Mexico
+##
+## 	This is an example script
+##	used to submit parallel 
+##      Dakota jobs on CARC machines.
+##	
+# M=6 processors
+#PBS -l nodes=3:ppn=2
+#PBS -l walltime=00:05:00
+#PBS -N DAKOTA_parallel_case
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+#module load dakota/6.4/openmpi/1.10.1/intel/16.0.0
+module load /users/jdcf2710/modulefiles/Dakota/xena_intel_6_4
+
+# Get number of processors and nodes
+NPROCS=$(cat $PBS_NODEFILE | wc -l)
+NNODES=$(cat $PBS_NODEFILE | uniq | wc -l)
+
+# This launches Dakota on M number of processors. For more information about
+# how parallelism works in Dakota, the user should read Chapter 17 from the 
+# User's Manual or checkout the examples in the 
+#         $DAKOTA_INSTALL_DIR/examples/parallelism directory.
+mpiexec -n ${NPROCS} dakota -i dakota_input.in -o dakota_output.out > log.dakota  
+

@@ -1,0 +1,39 @@
+### Introductory StarCCM+ Example PBS Script
+### Copyright (c) 2013 The Center for Advanced Research Computing
+###                           at The University of New Mexico
+## Request how many nodes and processors per node (ppn) are needed
+#PBS -lnodes=8:ppn=8
+#PBS -lwalltime=8:00:00
+## Specify the shell to be bash
+#PBS -S /bin/tcsh
+## Specify job name
+#PBS -N mypbsjob
+#PBS -j oe
+
+#Change the working directory to the same as the file
+cd $PBS_O_WORKDIR
+
+##################################
+# Set the name of the .sim file to process here
+setenv SIM input_file.sim
+####################################
+
+# determine the number of processors allocated to this job
+setenv NPROCS `cat $PBS_NODEFILE | wc -l`
+
+# load in the environment modules
+#source /etc/profile.d/modules.csh
+
+# load the StarCCM+ environment module
+module load starccm/10.04.011
+
+setenv LM_LICENSE_FILE XXXX@XXX.XX.XXX.XX
+
+# find short Job ID
+setenv SHORT_JOBID `echo $PBS_JOBID | awk -F. '{print $1}'`
+
+echo Simulation ${SIM} Procs: ${NPROCS} Job ID: ${SHORT_JOBID}
+
+# Run StarCCM+ on $NPROCS processors which are listed in the $PBS_NODEFILE
+
+starccm+ -np $NPROCS -rsh ssh -machinefile $PBS_NODEFILE -batch mesh $SIM  > ${SHORT_JOBID}.log
