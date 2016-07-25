@@ -18,5 +18,5 @@ export MPI_procs=16
 
 cd $PBS_O_WORKDIR
 
-mpirun -np $MPI_procs -machinefile $PBS_NODEFILE pw.x < test.in > test.out
+mpirun -np $MPI_procs -machinefile $PBS_NODEFILE pw.x -i test.in > test.out
 
