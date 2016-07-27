@@ -1,22 +1,22 @@
 #!/bin/bash
 
-## Introductory Example for running Quantum Espresso
+## Introductory Example for running Quantum Espresso on Xena
 ## Copyright (c) 2013 The Center for Advanced Research Computing
 ##                            at The University of New Mexico
 
-#PBS -l nodes=1:ppn=16
-#PBS -l walltime=01:00:00
+#PBS -l nodes=2:ppn=16
+#PBS -l walltime=24:00:00
 #PBS -N espresso
 
 # Load up espresso into path. This is a hybrid MPI+openMP build
 module load espresso-MPI/5.3.0/intel/16.0.0
 
-# Choose the number of threads each MPI process will have. # of MPI * # of threads = total # of cores
-# Note: For the jobs I have tested, I find more MPI and fewer threads to be most efficient
-export OMP_NUM_THREADS=1
-export MPI_procs=16
+# Determine the total number of processors allocated to this job
+export PROCS=`cat $PBS_NODEFILE | wc -l`
 
+# Change to the directory that this job was submitted from
 cd $PBS_O_WORKDIR
 
-mpirun -np $MPI_procs -machinefile $PBS_NODEFILE pw.x -i test.in > test.out
+cat $PBS_NODEFILE > nodefile.txt
 
+/usr/bin/time mpirun -ppn 16 -np $PROCS -machinefile $PBS_NODEFILE pw.x -i inputscript.in > output.log
