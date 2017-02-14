@@ -15,7 +15,7 @@ cd $PBS_O_WORKDIR
 echo starting Matlab jobs at `date`
 
 # Call your matlab code in file hello.m and direct output to output.log
-matlab -r -nojvm -nodisplay < hello.m > output.log
+matlab -r -nojvm -nodisplay hello > output.log
 
 echo finished Matlab jobs at `date`
 
