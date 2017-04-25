@@ -4,9 +4,9 @@
 ## Dr. Ryan Johnson, May 13, 2015
 ## PBS submission script to run Gaussian 09 code on a single node
 
-#PBS -W group_list=gaussian
 #PBS -l nodes=1:ppn=8
 #PBS -l walltime=24:00:00
+#PBS -S /bin/bash
 #PBS -N gauss
 
 # source modules file
