@@ -20,17 +20,18 @@ export RSH_COMMAND="ssh"
 source /etc/profile.d/modules.sh
 
 # Load Orca and included openmpi modules
-module load orca
+module load orca/4.0.0
 
 # Get the full path to orca (helps with mpi problems)
 export ORCA_EXEC=$(which orca)
 
 # Internal variables for creating scratch dir
+PBS_JOBNUM=$(echo PBS_JOBID | cut -d"." -f1 )
 input=${files[0]}
 NodeList=( $(cat "$PBS_NODEFILE" | sort | uniq -c) )
 ExecHost=$(hostname -s)
 JobID=$(echo -n "$PBS_JOBID"|cut -d'.' -f1)
-SCRDIR="/tmp/orcajob/$input"
+SCRDIR="/tmp/orca/$(whoami)/$PBS_JOBNUM"
 
 # Create scratch dir
 for (( i=0 ; i < ${#NodeList[@]} ; i++ ))
