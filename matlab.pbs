@@ -1,21 +1,40 @@
+#!/bin/bash
 ## University of New Mexico Center for Advanced Research Computing
 ## Ryan Johnson, March 16, 2016
 ## PBS submission script to run a batch MATLAB script on CARC machines
+
+# these are the pbs directives. They are just options to qsub, written here 
+# for convenience. They are overwritten by any given to qsub on command line
 
 #PBS -l nodes=1:ppn=8
 #PBS -l walltime=01:00:00
 #PBS -N matlab_test
 #PBS -S /bin/bash
 
-source /etc/profile.d/modules.sh
+# matlab script must end in .m but do not include the .m here:
+# ie for hello.m only hello is written (-r option to matlab is used)
+INPUT=hello   
+OUTPUT=out.log
+
+##########################################
+# shouldn't need to edit below here often
+##########################################
+
+
+# must load the module
 module load matlab
 
+#change to directory where you typed qsub
 cd $PBS_O_WORKDIR
 
-echo starting Matlab jobs at `date`
+#These type of lines will be in the STDOUT file (ie .o)
+echo starting Matlab jobs at $(date)
 
-# Call your matlab code in file hello.m and direct output to output.log
-matlab -r -nojvm -nodisplay hello > output.log
+# Call matlab on your code and redirect output to OUTPUT
+matlab -r -nojvm -nodisplay $INPUT > $OUTPUT
 
-echo finished Matlab jobs at `date`
+# also in .o
+echo finished Matlab jobs at $(date)
 
+# better timing info can be found my prepending /usr/bin/time to matlab command
+# see man time for more info
