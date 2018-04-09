@@ -9,8 +9,6 @@
 #PBS -S /bin/bash
 #PBS -N gauss
 
-# source modules file
-source /etc/profile.d/modules.sh  
 
 #Load Gauss module
 module load gaussian/g09/C.01
