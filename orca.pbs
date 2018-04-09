@@ -17,8 +17,6 @@ cwd=$PBS_O_WORKDIR
 
 export RSH_COMMAND="ssh"
 
-source /etc/profile.d/modules.sh
-
 # Load Orca and included openmpi modules
 module load orca/4.0.0
 
