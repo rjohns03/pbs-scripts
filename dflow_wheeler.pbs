@@ -1,0 +1,103 @@
+#!/bin/bash
+
+## Introductory Example for running DFlow
+## Copyright (c) 2013 The Center for Advanced Research Computing
+##                            at The University of New Mexico
+
+
+########################## USER INPUT BELOW ###########################
+# Cluster resources. These flags can also be given to qsub
+# and it will overwrite these values. 
+# ie. qsub -lwalltime=12:00:00 dflow.pbs will have 12 hour walltime
+
+#PBS -lnodes=4:ppn=8
+#PBS -lwalltime=24:00:00
+#PBS -S /bin/bash
+#PBS -N DFLOW          
+
+# This gets the job number from the full name. 
+# ie 1234 from 1234.wheeler.alliance.unm.edu:
+PBS_JOBNUM=$(echo $PBS_JOBID | cut -d"." -f 1)
+
+# Input and output files
+INPUT_FILE=codelta_S5_B.mdu
+
+# This will name output files date_jobnum.log, ie 2017-11-04_340234.log
+OUTPUT_FILE=$(date -I)_${PBS_JOBNUM}.log
+
+# Here are other possible ideas: 
+# Using INPUT_FILE above for name, but without extension, and job number
+# Ie codelta_S5_B-run340234.out
+#OUTPUT_FILE=${INPUT_FILE%.*}-${PBS_JOBNUM}.out
+
+# And, of course, very simple names:
+#OUTPUT_FILE=out.log
+
+######  Parallelizm. ######
+#  $PBS_NP is always equal to the number of nodes times ppn, according
+# to the values of nodes and ppn set above in the #PBS block. 
+# (PBS doesn't know anything about the actual machine, only the values you tell it)
+
+# The fact that dflow has both MPI and OpenMPI parallism often means that a
+# little testing is required to identify opimal values for each. MPI can span
+# cores and nodes, Threads can only span the cores within a node, but cannot span
+# multiple nodes.  MPI tasks each copy the entire application so can use a lot of
+# memory. Threads all access the same memory arrays. First MPI tasks are spawned,
+# and then each MPI task has some number of threads. Testing the optimial way is
+# dependent on the application and run, and I have seen all possible variations
+# (ie maximizing either MPI tasks, or threads, or something in between) work
+# best, and so testing is usually the best way to determine how to run. 
+# 
+# Case A: maximize MPI, ie use MPI for everything. Here, N = # nodes, C = # cores per node
+# (N x C) MPI tasks and 1 Thread per MPI task.    
+# MPI_TASKS=$PBS_NP
+# THREADS=1
+# 
+# Case B: maximize threads
+# (N x MPI) + (C x Threads) 
+# MPI_TASKS=$PBS_NUM_NODES
+# THREADS=$PBS_NUM_PPN
+
+
+MPI_TASKS=$PBS_NP
+THREADS=1
+
+
+####### Timeing, and other benchmark information ######
+# The command /usr/bin/time can provide a lot of information about a job, including time, memory, I/O and swapping values
+# The variable TIME contains the formatting for the information that is printed at the end of a run. See "man time" for more
+# informnation.
+export TIME=" Command: %C \n Total time: %E \n Time (sec): %e \n Max, Ave mem (kb): %M, %K \n Swap: %W \n I,O: %I,%O \n"
+
+
+DFLOW_CALL=
+################ Should not need to change below here ##################
+
+# Load the environment module for dflow and dependancied
+# This also loads the associated compiler and openMPI 
+module load dflow/1.1.198/impi/2017.2/intel/17.0.3.191
+
+# Change to the directory that this job was submitted from
+cd $PBS_O_WORKDIR
+
+
+# Print an info block providing details about the calculation. This will be in the .o file
+echo Job $PBS_JOBNUM running on $(hostname) on $(date -I)
+echo This job is using these $PBS_NUM_NODES nodes: 
+cat $PBS_NODEFILE | uniq | tr "\n" " "
+echo
+echo Using the following paramaters: 
+echo MPI_TASKS: $MPI_TASKS
+echo THREADS: $THREADS
+echo 
+echo additional mpi options can be found by loading dflow and running
+echo "mpirun -help" from the head node
+echo
+echo DFLOW START TIME: $(date)
+
+/usr/bin/time -o .time.log mpirun -np $MPI_TASKS -machinefile $PBS_NODEFILE dflowfm --nodisplay -t $THREADS --autostart $INPUT_FILE > $OUTPUT_FILE 
+
+echo DFLOW FINISH TIME: $(date)
+echo 
+echo TIMING DATA from /usr/bin/time: 
+cat .time.log

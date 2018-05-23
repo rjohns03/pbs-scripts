@@ -5,7 +5,7 @@
 ## PBS submission script to run orca code
 
 #PBS -l walltime=01:00:00
-#PBS -l nodes=1:ppn=4
+#PBS -l nodes=2:ppn=8
 #PBS -N TestIt
 
 # User defined variables
@@ -17,13 +17,11 @@ cwd=$PBS_O_WORKDIR
 
 export RSH_COMMAND="ssh"
 
-source /etc/profile.d/modules.sh
-
 # Load Orca and included openmpi modules
-module load orca/4.0.0
+module load orca/4.0.1
 
 # Get the full path to orca (helps with mpi problems)
-export ORCA_EXEC=$(which orca)
+ORCA_EXEC=$(which orca)
 
 # Internal variables for creating scratch dir
 PBS_JOBNUM=$(echo PBS_JOBID | cut -d"." -f1 )
@@ -31,21 +29,28 @@ input=${files[0]}
 NodeList=( $(cat "$PBS_NODEFILE" | sort | uniq -c) )
 ExecHost=$(hostname -s)
 JobID=$(echo -n "$PBS_JOBID"|cut -d'.' -f1)
-SCRDIR="/tmp/orca/$(whoami)/$PBS_JOBNUM"
 
-# Create scratch dir
-for (( i=0 ; i < ${#NodeList[@]} ; i++ ))
-do
-        ((i++))
-        if [[ ${NodeList[$i]} == "$ExecHost" ]] ; then
-                mkdir -p "$SCRDIR"
-        else
-                ssh -x -n "${NodeList[$i]}" "mkdir -p $SCRDIR"
-        fi
-done
+# Choosing scratch location based on machine
+# Since wheeler does not have hard drives on compute nodes
+case "$HOST" in 
+    *wheeler*)
+        # Define and create the scratch directry
+        SCRDIR="/wheeler/scratch/$USER/.orcajobs/$JobID" 
+        mkdir -p "$SCRDIR" ;;
+    *)
+        # Define and create the scratch directory
+        SCRDIR="/tmp/orca/$(whoami)/$PBS_JOBNUM" 
+        for (( i=0 ; i < ${#NodeList[@]} ; i++ ))
+        do
+                ((i++))
+                if [[ ${NodeList[$i]} == "$ExecHost" ]] ; then
+                        mkdir -p "$SCRDIR"
+                else
+                        ssh -x -n "${NodeList[$i]}" "mkdir -p $SCRDIR"
+                fi
+        done  ;;
+esac 
 
-echo Starting job: "$(date)"
-echo Job number: "$(echo "$JobID")"
 
 # Create .nodes file and copy to SCRDIR
 cp "$PBS_NODEFILE" "$cwd/${input:0:${#input}-4}.nodes"
@@ -56,9 +61,14 @@ do
 	cp "$cwd/$file" "$SCRDIR/"
 done
 
-# cd to scratch dir and start orca
+
+# cd to scratch dir and start orca, redirect output to the PBS_O_WORKDIR
 
 cd "$SCRDIR"
+
+echo Starting job: "$(date)"
+echo Job number: "$(echo "$JobID")"
+
 $ORCA_EXEC "$input" > "$cwd/${input:0:${#input}-4}.out"
 
 
