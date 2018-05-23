@@ -42,9 +42,6 @@ cd     $PBS_O_WORKDIR
 # in your login shell before submitting this PBS script
 # on metropolis or nano
 
-# first, load the GNU Environment Modules system (this is wrong on ulam)
-source /etc/profile.d/modules.csh
-
 # now load the Gaussian '09 environment module
 module load gaussian/g09
 

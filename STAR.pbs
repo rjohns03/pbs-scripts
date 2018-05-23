@@ -9,7 +9,7 @@
 #PBS -S /bin/bash
 
 # Load the environment modules system
-source /etc/profile.d/modules.sh
+# source /etc/profile.d/modules.sh
 
 # Load the environment module for STAR version 2.4.2a
 module load star/2.4.2a/gcc/4.8.4
