@@ -1,0 +1,15 @@
+# Submission script for running abyss-pe ib multiple nodes at CARC. To be called from abyss_loop.sh to iterate pbs submission to run
+# with differt kmer values for optimizing.
+# Change to the directory that this job was submitted from
+cd $PBS_O_WORKDIR/lice_$var
+
+# Load modules
+module load abyss-2.0.2-intel-18.0.0-openmpi-bym2wa4
+
+# export number of porcessors for this job
+export PROCS=$(cat $PBS_NODEFILE | wc -l)
+
+# create host file for mpi
+cat $PBS_NODEFILE > nodes.txt
+# call nesoni to clip
+abyss-pe name=lice_$var np=$PROCS mpirun='mpirun -x PATH -hostfile nodes.txt' k=$var in='~/lice/DZTM377_reads1.fq ~/lice/DZTM377_reads2.fq'
